@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodShare - Donate & Volunteer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .hero-bg {
+            background-image: url('https://images.pexels.com/photos/6646877/pexels-photo-6646877.jpeg');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <a href="#" class="flex items-center py-4 px-2">
+                            <span class="font-semibold text-gray-500 text-lg">FoodShare</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-1">
+                    <a href="#" class="py-4 px-2 text-green-500 border-b-4 border-green-500 font-semibold">Home</a>
+                    <a href="auth.html" class="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-screen flex items-center justify-center">
+        <div class="bg-black bg-opacity-50 p-8 rounded-lg text-center max-w-2xl mx-4">
+            <h1 class="text-4xl font-bold text-white mb-6">Connecting Food Donors with Volunteers</h1>
+            <p class="text-xl text-white mb-8">Help reduce food waste by connecting restaurants with volunteers who can deliver surplus food to those in need.</p>
+            <a href="auth.html" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full text-lg transition duration-300">
+                Join Us Now <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">How It Works</h2>
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full md:w-1/3 px-4 mb-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md h-full">
+                        <div class="text-green-500 text-4xl mb-4">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Restaurants Donate</h3>
+                        <p class="text-gray-600">List surplus food available for donation with pickup details.</p>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/3 px-4 mb-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md h-full">
+                        <div class="text-green-500 text-4xl mb-4">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Volunteers Connect</h3>
+                        <p class="text-gray-600">Find nearby donations and arrange for pickup and delivery.</p>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/3 px-4 mb-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md h-full">
+                        <div class="text-green-500 text-4xl mb-4">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Real-time Tracking</h3>
+                        <p class="text-gray-600">Track food deliveries in real-time from pickup to drop-off.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap justify-between">
+                <div class="w-full md:w-1/3 mb-6 md:mb-0">
+                    <h3 class="text-xl font-semibold mb-4">FoodShare</h3>
+                    <p>Reducing food waste through community collaboration.</p>
+                </div>
+                <div class="w-full md:w-1/3 mb-6 md:mb-0">
+                    <h3 class="text-xl font-semibold mb-4">Quick Links</h3>
+                    <ul>
+                        <li class="mb-2"><a href="#" class="hover:text-green-400">Home</a></li>
+                        <li class="mb-2"><a href="auth.html" class="hover:text-green-400">Login</a></li>
+                    </ul>
+                </div>
+                <div class="w-full md:w-1/3">
+                    <h3 class="text-xl font-semibold mb-4">Contact</h3>
+                    <p><i class="fas fa-envelope mr-2"></i> contact@foodshare.org</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p>&copy; 2023 FoodShare. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
