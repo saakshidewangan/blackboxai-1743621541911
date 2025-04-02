@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodShare - Sign Up / Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .auth-bg {
+            background-image: url('https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg');
+            background-size: cover;
+            background-position: center;
+        }
+        .tab-active {
+            border-bottom: 3px solid #10B981;
+            color: #10B981;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <div class="min-h-screen flex items-center justify-center auth-bg bg-black bg-opacity-50 bg-blend-multiply">
+        <div class="bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-md">
+            <!-- Tab Navigation -->
+            <div class="flex border-b">
+                <button id="restaurant-tab" class="flex-1 py-4 px-6 text-center font-medium text-gray-500 tab-active">
+                    Restaurant
+                </button>
+                <button id="volunteer-tab" class="flex-1 py-4 px-6 text-center font-medium text-gray-500">
+                    Volunteer
+                </button>
+            </div>
+
+            <!-- Forms Container -->
+            <div class="p-8">
+                <!-- Restaurant Signup Form -->
+                <div id="restaurant-form">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Restaurant Sign Up</h2>
+                    <form id="restaurant-signup">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="r-name">
+                                Restaurant Name
+                            </label>
+                            <input class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                   id="r-name" type="text" placeholder="Enter restaurant name" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="r-email">
+                                Email
+                            </label>
+                            <input class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                   id="r-email" type="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="r-password">
+                                Password
+                            </label>
+                            <input class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                   id="r-password" type="password" placeholder="Create a password" required>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="r-location">
+                                Location
+                            </label>
+                            <div class="flex">
+                                <input class="w-full px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                       id="r-location" type="text" placeholder="Address" required>
+                                <button type="button" id="r-locate-me" class="bg-gray-200 px-3 rounded-r-md hover:bg-gray-300">
+                                    <i class="fas fa-location-arrow"></i>
+                                </button>
+                            </div>
+                            <div class="flex mt-2">
+                                <input class="w-1/2 px-3 py-2 border border-gray-300 rounded-md mr-2 focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                       id="r-latitude" type="number" step="0.000001" placeholder="Latitude" required>
+                                <input class="w-1/2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                       id="r-longitude" type="number" step="0.000001" placeholder="Longitude" required>
+                            </div>
+                        </div>
+                        <button class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300" 
+                                type="submit">
+                            Sign Up
+                        </button>
+                    </form>
+                    <p class="text-center text-gray-600 mt-4">
+                        Already have an account? <a href="#" id="r-show-login" class="text-green-500 hover:underline">Log in</a>
+                    </p>
+                </div>
+
+                <!-- Restaurant Login Form (hidden by default) -->
+                <div id="restaurant-login" class="hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Restaurant Login</h2>
+                    <form id="restaurant-login-form">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="r-login-email">
+                                Email
+                            </label>
+                            <input class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                   id="r-login-email" type="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="r-login-password">
+                                Password
+                            </label>
+                            <input class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                   id="r-login-password" type="password" placeholder="Enter your password" required>
+                        </div>
+                        <button class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300" 
+                                type="submit">
+                            Log In
+                        </button>
+                    </form>
+                    <p class="text-center text-gray-600 mt-4">
+                        Don't have an account? <a href="#" id="r-show-signup" class="text-green-500 hover:underline">Sign up</a>
+                    </p>
+                </div>
+
+                <!-- Volunteer Signup Form (hidden by default) -->
+                <div id="volunteer-form" class="hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Volunteer Sign Up</h2>
+                    <form id="volunteer-signup">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="v-name">
+                                Full Name
+                            </label>
+                            <input class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                   id="v-name" type="text" placeholder="Enter your name" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="v-email">
+                                Email
+                            </label>
+                            <input class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                   id="v-email" type="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="v-password">
+                                Password
+                            </label>
+                            <input class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                   id="v-password" type="password" placeholder="Create a password" required>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="v-location">
+                                Location
+                            </label>
+                            <div class="flex">
+                                <input class="w-full px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                       id="v-location" type="text" placeholder="Address" required>
+                                <button type="button" id="v-locate-me" class="bg-gray-200 px-3 rounded-r-md hover:bg-gray-300">
+                                    <i class="fas fa-location-arrow"></i>
+                                </button>
+                            </div>
+                            <div class="flex mt-2">
+                                <input class="w-1/2 px-3 py-2 border border-gray-300 rounded-md mr-2 focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                       id="v-latitude" type="number" step="0.000001" placeholder="Latitude" required>
+                                <input class="w-1/2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                       id="v-longitude" type="number" step="0.000001" placeholder="Longitude" required>
+                            </div>
+                        </div>
+                        <button class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300" 
+                                type="submit">
+                            Sign Up
+                        </button>
+                    </form>
+                    <p class="text-center text-gray-600 mt-4">
+                        Already have an account? <a href="#" id="v-show-login" class="text-green-500 hover:underline">Log in</a>
+                    </p>
+                </div>
+
+                <!-- Volunteer Login Form (hidden by default) -->
+                <div id="volunteer-login" class="hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Volunteer Login</h2>
+                    <form id="volunteer-login-form">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="v-login-email">
+                                Email
+                            </label>
+                            <input class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                   id="v-login-email" type="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="v-login-password">
+                                Password
+                            </label>
+                            <input class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" 
+                                   id="v-login-password" type="password" placeholder="Enter your password" required>
+                        </div>
+                        <button class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300" 
+                                type="submit">
+                            Log In
+                        </button>
+                    </form>
+                    <p class="text-center text-gray-600 mt-4">
+                        Don't have an account? <a href="#" id="v-show-signup" class="text-green-500 hover:underline">Sign up</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
