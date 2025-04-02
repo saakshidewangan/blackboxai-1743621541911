@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodShare - Map View</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map { height: 500px; }
+        .route-marker {
+            width: 20px;
+            height: 20px;
+            background-color: #3B82F6;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <a href="#" class="flex items-center py-4 px-2">
+                            <span class="font-semibold text-gray-500 text-lg">FoodShare</span>
+                        </a>
+                    </div>
+                    <div class="hidden md:flex items-center space-x-1">
+                        <a href="volunteer-dashboard.html" class="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">Dashboard</a>
+                        <a href="map-view.html" class="py-4 px-2 text-green-500 border-b-4 border-green-500 font-semibold">Map View</a>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-3">
+                    <button onclick="logout()" class="py-2 px-4 text-gray-500 font-semibold hover:text-green-500 transition duration-300">
+                        Logout <i class="fas fa-sign-out-alt ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Delivery Tracking</h1>
+            <button id="refresh-location" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300">
+                <i class="fas fa-sync-alt mr-2"></i>Refresh Location
+            </button>
+        </div>
+
+        <!-- Map Container -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div id="map" class="rounded-md overflow-hidden"></div>
+        </div>
+
+        <!-- Delivery Info -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Delivery Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Pickup Location</h3>
+                    <p id="pickup-location" class="text-gray-600">Loading...</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Delivery Destination</h3>
+                    <p id="delivery-location" class="text-gray-600">Loading...</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Estimated Time</h3>
+                    <p id="estimated-time" class="text-gray-600">Calculating...</p>
+                </div>
+            </div>
+            <div class="mt-6">
+                <button id="complete-delivery" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300">
+                    <i class="fas fa-check-circle mr-2"></i> Mark as Delivered
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="scripts.js"></script>
+    <script>
+        // Check authentication
+        if (!checkAuth()) {
+            window.location.href = 'auth.html';
+        }
+
+        // Map variables
+        let map;
+        let userMarker;
+        let restaurantMarker;
+        let routeLine;
+        let watchId;
+
+        // Initialize map when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load delivery data
+            loadDeliveryData();
+            
+            // Set up event listeners
+            document.getElementById('refresh-location').addEventListener('click', updateUserLocation);
+            document.getElementById('complete-delivery').addEventListener('click', completeDelivery);
+        });
+
+        // Load delivery data from server
+        async function loadDeliveryData() {
+            try {
+                const response = await fetch('/api/deliveries/active', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                const delivery = await response.json();
+                
+                if (response.ok) {
+                    initMap(delivery);
+                    startLocationTracking();
+                } else {
+                    throw new Error(delivery.message || 'Failed to load delivery data');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert(error.message || 'An error occurred while loading delivery data');
+            }
+        }
+
+        // Initialize map with delivery locations
+        function initMap(delivery) {
+            // Set up map centered between the two points
+            const centerLat = (delivery.restaurant.location[1] + delivery.destination.location[1]) / 2;
+            const centerLng = (delivery.restaurant.location[0] + delivery.destination.location[0]) / 2;
+            
+            map = L.map('map').setView([centerLat, centerLng], 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Add restaurant marker
+            restaurantMarker = L.marker(
+                [delivery.restaurant.location[1], delivery.restaurant.location[0]], 
+                {
+                    icon: L.divIcon({
+                        html: '<div class="relative w-8 h-8 bg-red-500 rounded-full border-2 border-white shadow-md flex items-center justify-center text-white"><i class="fas fa-utensils"></i></div>',
+                        className: 'leaflet-restaurant-marker',
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 16]
+                    })
+                }
+            ).addTo(map).bindPopup(`<b>${delivery.restaurant.name}</b><br>Pickup Location`);
+
+            // Add destination marker
+            L.marker(
+                [delivery.destination.location[1], delivery.destination.location[0]], 
+                {
+                    icon: L.divIcon({
+                        html: '<div class="relative w-8 h-8 bg-blue-500 rounded-full border-2 border-white shadow-md flex items-center justify-center text-white"><i class="fas fa-home"></i></div>',
+                        className: 'leaflet-destination-marker',
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 16]
+                    })
+                }
+            ).addTo(map).bindPopup(`<b>Delivery Destination</b>`);
+
+            // Update info boxes
+            document.getElementById('pickup-location').textContent = delivery.restaurant.address || 'Location available';
+            document.getElementById('delivery-location').textContent = delivery.destination.address || 'Location available';
+            document.getElementById('estimated-time').textContent = delivery.eta || 'Calculating...';
+        }
+
+        // Start tracking user's location
+        function startLocationTracking() {
+            if (navigator.geolocation) {
+                // Get initial position
+                navigator.geolocation.getCurrentPosition(
+                    position => updateUserPosition(position),
+                    error => console.error('Geolocation error:', error)
+                );
+                
+                // Watch for position updates
+                watchId = navigator.geolocation.watchPosition(
+                    position => updateUserPosition(position),
+                    error => console.error('Geolocation error:', error),
+                    { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
+                );
+            } else {
+                alert('Geolocation is not supported by your browser');
+            }
+        }
+
+        // Update user's position on the map
+        function updateUserPosition(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            
+            // Update or create user marker
+            if (userMarker) {
+                userMarker.setLatLng([lat, lng]);
+            } else {
+                userMarker = L.marker([lat, lng], {
+                    icon: L.divIcon({
+                        html: '<div class="relative w-8 h-8 bg-green-500 rounded-full border-2 border-white shadow-md flex items-center justify-center text-white"><i class="fas fa-user"></i></div>',
+                        className: 'leaflet-user-marker',
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 16]
+                    })
+                }).addTo(map).bindPopup('Your Location');
+            }
+            
+            // Update route line
+            if (restaurantMarker) {
+                const restaurantLatLng = restaurantMarker.getLatLng();
+                updateRouteLine(restaurantLatLng.lat, restaurantLatLng.lng, lat, lng);
+            }
+        }
+
+        // Update the route line between two points
+        function updateRouteLine(fromLat, fromLng, toLat, toLng) {
+            if (routeLine) {
+                map.removeLayer(routeLine);
+            }
+            
+            routeLine = L.polyline(
+                [[fromLat, fromLng], [toLat, toLng]],
+                { color: '#3B82F6', weight: 4, dashArray: '5, 5' }
+            ).addTo(map);
+        }
+
+        // Manually refresh location
+        function updateUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => updateUserPosition(position),
+                    error => alert('Unable to refresh location: ' + error.message)
+                );
+            }
+        }
+
+        // Complete delivery
+        async function completeDelivery() {
+            if (confirm('Are you sure you want to mark this delivery as complete?')) {
+                try {
+                    const response = await fetch('/api/deliveries/complete', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        // Stop location tracking
+                        if (watchId && navigator.geolocation) {
+                            navigator.geolocation.clearWatch(watchId);
+                        }
+                        
+                        alert('Delivery marked as complete! Thank you for your service.');
+                        window.location.href = 'volunteer-dashboard.html';
+                    } else {
+                        throw new Error(result.message || 'Failed to complete delivery');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(error.message || 'An error occurred while completing delivery');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
